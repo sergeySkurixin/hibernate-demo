@@ -16,6 +16,10 @@ repositories {
 
 dependencies {
     implementation("org.projectlombok:lombok")
+    implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("org.postgresql:postgresql:42.2.25")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
 
     testImplementation(kotlin("test"))
     implementation("org.springframework.boot:spring-boot-starter")
