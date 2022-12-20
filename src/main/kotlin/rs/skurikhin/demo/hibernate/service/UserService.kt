@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import rs.skurikhin.demo.hibernate.bean.UserEntity
 import rs.skurikhin.demo.hibernate.repository.JpaUserRepository
 import rs.skurikhin.demo.hibernate.repository.UserRepository
+import java.util.*
 
 @Service
 class UserService(
@@ -19,4 +20,26 @@ class UserService(
         val res: UserEntity = jpaUserRepository.save(user)
         return res
     }
+
+    fun findUserByUserId(userId: Long): Optional<UserEntity> {
+        return jpaUserRepository.findByUserId(userId)
+    }
+
+    fun findUserByPhone(phone: Long): Optional<UserEntity> {
+        return jpaUserRepository.findByPhone(phone)
+    }
+
+    fun findAllUsers(): MutableList<UserEntity?> {
+        return jpaUserRepository.findAll()
+    }
+
+//    fun addArticle(userId: String, article: ArticleEntity): UserEntity {
+//        val user: UserEntity = findUser(userId).orElseThrow { RuntimeException("User not found") }!!
+//        if (user.favoriteArticles == null) {
+//            user.favoriteArticles = mutableListOf()
+//        }
+//        user.favoriteArticles!!.add(article)
+//        val res = jpaUserRepository.save(user)
+//        return res
+//    }
 }

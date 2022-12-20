@@ -15,13 +15,22 @@ repositories {
 }
 
 dependencies {
+//    +lombok
     implementation("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok:1.18.24")
+    testCompileOnly("org.projectlombok:lombok:1.18.24")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.24")
+
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.postgresql:postgresql:42.2.25")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // testcontainers
+    testImplementation("org.testcontainers:postgresql:1.17.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.17.6")
 
 
     testImplementation(kotlin("test"))
