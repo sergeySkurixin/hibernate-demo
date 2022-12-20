@@ -1,6 +1,5 @@
 package rs.skurikhin.demo.hibernate.bean
 
-import lombok.ToString
 import javax.persistence.*
 
 @Entity
@@ -22,6 +21,10 @@ data class UserEntity(
 
     //    @ElementCollection
 //    @CollectionTable
-//    @OneToMany
-//    var favoriteArticles: MutableList<ArticleEntity>? = null
+    @OneToMany(
+        cascade = [CascadeType.ALL],
+        fetch = FetchType.EAGER,
+    )
+//    @JoinColumn(name = "article_id")
+    var favoriteArticles: MutableList<ArticleEntity> = mutableListOf()
 )

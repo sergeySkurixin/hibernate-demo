@@ -1,11 +1,12 @@
 package rs.skurikhin.demo.hibernate.bean
 
-import javax.persistence.Entity
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
-class ArticleEntity {
+@Table(name = "article")
+data class ArticleEntity(
     @Id
-    var articleId: String = ""
-    var linkUrl: String = ""
-}
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var articleId: Long = 0L,
+    var linkUrl: String? = null,
+)

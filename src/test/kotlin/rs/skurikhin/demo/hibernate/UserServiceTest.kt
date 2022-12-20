@@ -48,6 +48,23 @@ class UserServiceTest {
         assertEquals(phone, user!!.phone)
     }
 
+    @Test
+    fun testAddArticle() {
+        val phone = 12345L
+        val user = userService.auth(phone)
+        val url1 = "abcd.ru"
+        val url2 = "new.ru"
+
+        userService.addArticle(user.userId, url1)
+        userService.addArticle(user.userId, url2)
+
+        val articles = userService.findUserByPhone(phone)!!.favoriteArticles
+        log.info("favoriteArticles: $articles")
+        assertEquals(2, articles.size)
+        assertEquals(url1, articles[0].linkUrl)
+        assertEquals(url2, articles[1].linkUrl)
+    }
+
     @Throws(SQLException::class)
     private fun printSqlTableStructure(tableName: String = "users") {
         dataSource.connection.prepareStatement(
