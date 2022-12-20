@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service
 import rs.skurikhin.demo.hibernate.bean.UserEntity
 import rs.skurikhin.demo.hibernate.repository.JpaUserRepository
 import rs.skurikhin.demo.hibernate.repository.UserRepository
-import java.util.*
 
 @Service
 class UserService(
@@ -21,11 +20,11 @@ class UserService(
         return res
     }
 
-    fun findUserByUserId(userId: Long): Optional<UserEntity> {
+    fun findUserByUserId(userId: Long): UserEntity? {
         return jpaUserRepository.findByUserId(userId)
     }
 
-    fun findUserByPhone(phone: Long): Optional<UserEntity> {
+    fun findUserByPhone(phone: Long): UserEntity? {
         return jpaUserRepository.findByPhone(phone)
     }
 

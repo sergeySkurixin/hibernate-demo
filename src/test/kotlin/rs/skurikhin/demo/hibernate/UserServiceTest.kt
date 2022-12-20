@@ -1,6 +1,7 @@
 package rs.skurikhin.demo.hibernate
 
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,38 +15,42 @@ import rs.skurikhin.demo.hibernate.service.UserService
 import java.sql.ResultSet
 import java.sql.SQLException
 import javax.sql.DataSource
+import kotlin.test.assertNull
 
 @SpringBootTest(classes = [HibernateDemoMain::class])
 @Testcontainers
 class UserServiceTest {
     @Autowired
-    private val userService: UserService? = null
+    private lateinit var userService: UserService
 
     @Autowired
-    private val dataSource: DataSource? = null
+    private lateinit var dataSource: DataSource
 
     @Test
     @Throws(SQLException::class)
     fun testEmptySearch() {
 //        printSqlTableStructure();
-        val res = userService!!.findUserByUserId(123)
-        Assertions.assertNotNull(res)
+        val res = userService.findUserByUserId(123)
+        assertNull(res)
     }
 
     @Test
     fun testSaveAndGet() {
-        val phone = 12345
-        val auth = userService!!.auth(phone.toLong())
-        val user = userService.findUserByPhone(phone.toLong())
+        val phone = 12345L
+
+        val auth = userService.auth(phone)
+        val user = userService.findUserByPhone(phone)
         log.info("!!1 All users: {}", userService.findAllUsers())
-        Assertions.assertTrue(user.isPresent)
+
         log.info("!!1 auth: {}", auth)
         log.info("!!1 user: {}", user)
+        assertNotNull(user)
+        assertEquals(phone, user!!.phone)
     }
 
     @Throws(SQLException::class)
     private fun printSqlTableStructure(tableName: String = "users") {
-        dataSource!!.connection.prepareStatement(
+        dataSource.connection.prepareStatement(
             """
                 SELECT column_name, data_type
                 FROM information_schema.columns
