@@ -12,6 +12,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomUtils
+import rs.skurikhin.demo.hibernate.bean.Gender
 import rs.skurikhin.demo.hibernate.service.UserService
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -81,6 +82,17 @@ class UserServiceTest {
         assertEquals(2, resources.size)
         assertEquals(resource1, resources[0].resourceName)
         assertEquals(resource2, resources[1].resourceName)
+    }
+
+    @Test
+    fun changeGender() {
+        val phone = RandomUtils.nextLong()
+        val user = userService.auth(phone)
+
+        userService.changeGender(user.userId, Gender.MALE)
+
+        val found = userService.findUserByUserId(user.userId)!!
+        assertEquals(Gender.MALE, found.gender)
     }
 
     @Throws(SQLException::class)

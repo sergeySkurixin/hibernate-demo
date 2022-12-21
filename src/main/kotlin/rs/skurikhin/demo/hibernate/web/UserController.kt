@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import rs.skurikhin.demo.hibernate.bean.UserEntity
+import rs.skurikhin.demo.hibernate.bean.request.CreateUserRequest
 import rs.skurikhin.demo.hibernate.service.UserService
-import kotlin.random.Random
 
 @RestController
 @RequestMapping("users")
@@ -15,11 +15,10 @@ class UserController(
 ) {
 
     @PostMapping
-    fun insertUser(): ResponseEntity<*> {
-        val phone = Random.nextLong()
-        log.info("Insert user with phone={}", phone)
+    fun insertUser(@RequestBody req: CreateUserRequest): ResponseEntity<*> {
+        log.info("Insert user: {}", req)
 
-        val res = userService.auth(phone)
+        val res = userService.auth(req.phone)
         return ResponseEntity.ok(res)
     }
 
