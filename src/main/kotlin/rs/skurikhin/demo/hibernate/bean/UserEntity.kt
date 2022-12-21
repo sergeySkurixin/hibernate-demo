@@ -21,6 +21,9 @@ data class UserEntity(
     @Enumerated(value = EnumType.ORDINAL)
     var gender: Gender? = null,
 
+    @OneToOne
+    var countryResidence: Country? = null,
+
     /** example of OneToMany. It creates table with mapping between {@link ArticleEntity} and {@link UserEntity} */
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     var favoriteArticles: MutableList<ArticleEntity> = mutableListOf(),

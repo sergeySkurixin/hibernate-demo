@@ -12,7 +12,9 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomUtils
+import rs.skurikhin.demo.hibernate.bean.Country
 import rs.skurikhin.demo.hibernate.bean.Gender
+import rs.skurikhin.demo.hibernate.repository.JpaCountryRepository
 import rs.skurikhin.demo.hibernate.service.UserService
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -24,6 +26,9 @@ import kotlin.test.assertNull
 class UserServiceTest {
     @Autowired
     private lateinit var userService: UserService
+
+    @Autowired
+    private lateinit var countryRepository: JpaCountryRepository
 
     @Autowired
     private lateinit var dataSource: DataSource
@@ -93,6 +98,19 @@ class UserServiceTest {
 
         val found = userService.findUserByUserId(user.userId)!!
         assertEquals(Gender.MALE, found.gender)
+    }
+
+    @Test
+    fun changeCountryResidence() {
+        val (cnrId, countryName) = countryRepository.save(Country(countryName = "Serbia"))
+        val phone = RandomUtils.nextLong()
+        val user = userService.auth(phone)
+
+        userService.changeCountryResidence(user.userId, cnrId)
+
+        val found = userService.findUserByUserId(user.userId)!!
+        assertEquals(cnrId, found.countryResidence!!.cnrId)
+        assertEquals(countryName, found.countryResidence!!.countryName)
     }
 
     @Throws(SQLException::class)

@@ -1,11 +1,13 @@
 package rs.skurikhin.demo.hibernate.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rs.skurikhin.demo.hibernate.bean.ArticleEntity
 import rs.skurikhin.demo.hibernate.bean.ExternalLinkEntity
 import rs.skurikhin.demo.hibernate.bean.Gender
 import rs.skurikhin.demo.hibernate.bean.UserEntity
+import rs.skurikhin.demo.hibernate.repository.JpaCountryRepository
 import rs.skurikhin.demo.hibernate.repository.JpaUserRepository
 import rs.skurikhin.demo.hibernate.repository.UserRepository
 import javax.transaction.Transactional
@@ -14,6 +16,7 @@ import javax.transaction.Transactional
 class UserService(
     @Autowired private var userRepository: UserRepository,
     @Autowired private var jpaUserRepository: JpaUserRepository,
+    @Autowired private var countryRepository: JpaCountryRepository,
 ) {
     fun auth(phone: Long): UserEntity {
         val user = UserEntity().also {
@@ -31,12 +34,26 @@ class UserService(
         return user
     }
 
+    @Transactional
+    fun changeCountryResidence(userId: Long, cnrId: Int?): UserEntity {
+        val country = countryRepository.findById(cnrId).orElseThrow { countryNotExists(cnrId) }
+        val user = jpaUserRepository.findByUserId(userId) ?: throw userNotFoundException()
+
+        user.countryResidence = country
+        log.info("Country residence changed for userId={}, country: {}", userId, country)
+        return user
+    }
+
     fun findUserByUserId(userId: Long): UserEntity? {
-        return jpaUserRepository.findByUserId(userId)
+        return jpaUserRepository.findByUserId(userId).also {
+            log.info("Find user by userId={}, result: {}", userId, it)
+        }
     }
 
     fun findUserByPhone(phone: Long): UserEntity? {
-        return jpaUserRepository.findByPhone(phone)
+        return jpaUserRepository.findByPhone(phone).also {
+            log.info("Find user by phone={}, result: {}", phone, it)
+        }
     }
 
     fun findAllUsers(): MutableList<UserEntity?> {
@@ -64,4 +81,10 @@ class UserService(
     }
 
     private fun userNotFoundException() = RuntimeException("User not found")
+
+    private fun countryNotExists(cnrId: Int?) = RuntimeException("Country not exists, cnrId=$cnrId")
+
+    companion object {
+        private val log = LoggerFactory.getLogger(UserService::class.java)
+    }
 }
