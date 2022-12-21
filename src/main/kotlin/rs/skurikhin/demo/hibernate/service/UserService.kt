@@ -7,6 +7,7 @@ import rs.skurikhin.demo.hibernate.bean.ExternalLinkEntity
 import rs.skurikhin.demo.hibernate.bean.UserEntity
 import rs.skurikhin.demo.hibernate.repository.JpaUserRepository
 import rs.skurikhin.demo.hibernate.repository.UserRepository
+import javax.transaction.Transactional
 
 @Service
 class UserService(
@@ -34,20 +35,23 @@ class UserService(
         return jpaUserRepository.findAll()
     }
 
-    //    @Transactional
+    @Transactional
     fun addArticle(userId: Long, url: String): UserEntity {
         val user: UserEntity = findUserByUserId(userId) ?: throw RuntimeException("User not found")
 
         user.favoriteArticles.add(ArticleEntity(linkUrl = url))
 
-        return jpaUserRepository.save(user)
+//        return jpaUserRepository.save(user)
+        return user
     }
 
+    @Transactional
     fun addExternalLink(userId: Long, resourceName: String): UserEntity {
         val user: UserEntity = findUserByUserId(userId) ?: throw RuntimeException("User not found")
 
         user.externalLinks.add(ExternalLinkEntity(resourceName = resourceName))
 
-        return jpaUserRepository.save(user)
+//        return jpaUserRepository.save(user)
+        return user
     }
 }
