@@ -1,5 +1,7 @@
 package rs.skurikhin.demo.hibernate.bean
 
+import org.hibernate.annotations.LazyCollection
+import org.hibernate.annotations.LazyCollectionOption
 import javax.persistence.*
 
 @Entity
@@ -13,18 +15,16 @@ data class UserEntity(
 //    @Generated(GenerationTime.INSERT)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var userId: Long = 0,
-
-    //    @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_id_seq")
-//    var userId: Long = 0
     var phone: Long = 0,
     var email: String? = null,
 
-    //    @ElementCollection
-//    @CollectionTable
-    @OneToMany(
-        cascade = [CascadeType.ALL],
-        fetch = FetchType.EAGER,
-    )
-//    @JoinColumn(name = "article_id")
-    var favoriteArticles: MutableList<ArticleEntity> = mutableListOf()
+    /** example of OneToMany. It creates table with mapping between {@link ArticleEntity} and {@link UserEntity} */
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    var favoriteArticles: MutableList<ArticleEntity> = mutableListOf(),
+
+    /** example of OneToMany without 3rd(auxiliary) table(because of {@link JoinColumn} */
+    @OneToMany(cascade = [CascadeType.ALL])
+    @LazyCollection(LazyCollectionOption.FALSE) // same as fetch = FetchType.EAGER, because hibernate not allow few collections with FetchType.EAGER
+    @JoinColumn(name = "user_id")
+    var externalLinks: MutableList<ExternalLinkEntity> = mutableListOf(),
 )

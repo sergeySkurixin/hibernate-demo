@@ -11,6 +11,7 @@ import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomUtils
 import rs.skurikhin.demo.hibernate.service.UserService
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -36,7 +37,7 @@ class UserServiceTest {
 
     @Test
     fun testSaveAndGet() {
-        val phone = 12345L
+        val phone = RandomUtils.nextLong()
 
         val auth = userService.auth(phone)
         val user = userService.findUserByPhone(phone)
@@ -50,7 +51,7 @@ class UserServiceTest {
 
     @Test
     fun testAddArticle() {
-        val phone = 12345L
+        val phone = RandomUtils.nextLong()
         val user = userService.auth(phone)
         val url1 = "abcd.ru"
         val url2 = "new.ru"
@@ -63,6 +64,23 @@ class UserServiceTest {
         assertEquals(2, articles.size)
         assertEquals(url1, articles[0].linkUrl)
         assertEquals(url2, articles[1].linkUrl)
+    }
+
+    @Test
+    fun testAddExternalLinks() {
+        val phone = RandomUtils.nextLong()
+        val user = userService.auth(phone)
+        val resource1 = "vk.ru"
+        val resource2 = "google.com"
+
+        userService.addExternalLink(user.userId, resource1)
+        userService.addExternalLink(user.userId, resource2)
+
+        val resources = userService.findUserByPhone(phone)!!.externalLinks
+        log.info("resources: $resources")
+        assertEquals(2, resources.size)
+        assertEquals(resource1, resources[0].resourceName)
+        assertEquals(resource2, resources[1].resourceName)
     }
 
     @Throws(SQLException::class)
@@ -110,6 +128,7 @@ class UserServiceTest {
             .withDatabaseName("integration-tests-db")
             .withUsername("sa")
             .withPassword("sa")
+//            .withInitScript("db/manual")
 
         @JvmStatic
         @DynamicPropertySource
@@ -117,6 +136,8 @@ class UserServiceTest {
             registry.add("db.url") { postgreSQLContainer.jdbcUrl }
             registry.add("db.user") { postgreSQLContainer.username }
             registry.add("db.password") { postgreSQLContainer.password }
+            // use public schema as default for tests
+            registry.add("spring.jpa.properties.hibernate.default_schema") { "public" }
         }
     }
 }
