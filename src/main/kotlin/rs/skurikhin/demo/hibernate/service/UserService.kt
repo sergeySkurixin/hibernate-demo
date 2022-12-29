@@ -70,6 +70,7 @@ class UserService(
 
     @Transactional
     fun addArticle(userId: Long, url: String): UserEntity {
+        log.info("Add article for userId={}, url='{}'", userId, url)
         val user: UserEntity = findUserByUserId(userId) ?: throw userNotFoundException()
 
         user.favoriteArticles.add(ArticleEntity(linkUrl = url))
