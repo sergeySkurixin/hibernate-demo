@@ -113,6 +113,18 @@ class UserServiceTest {
         assertEquals(countryName, found.countryResidence!!.countryName)
     }
 
+    @Test
+    fun testAddName() {
+        val phone = RandomUtils.nextLong()
+        val user = userService.auth(phone)
+        val name = "Sergey"
+
+        userService.addName(user.userId, name)
+
+        val found = userService.findUserByUserId(user.userId)!!
+        assertEquals(name, found.names[0].firstName)
+    }
+
     @Throws(SQLException::class)
     private fun printSqlTableStructure(tableName: String = "users") {
         dataSource.connection.prepareStatement(

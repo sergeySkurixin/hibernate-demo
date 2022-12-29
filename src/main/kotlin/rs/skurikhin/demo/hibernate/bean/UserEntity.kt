@@ -33,4 +33,16 @@ data class UserEntity(
     @LazyCollection(LazyCollectionOption.FALSE) // same as fetch = FetchType.EAGER, because hibernate not allow few collections with FetchType.EAGER
     @JoinColumn(name = "user_id")
     var externalLinks: MutableList<ExternalLinkEntity> = mutableListOf(),
-)
+
+    @OneToMany(
+        mappedBy = "user",
+        cascade = [CascadeType.ALL]
+    )
+    @LazyCollection(LazyCollectionOption.FALSE)
+    var names: MutableList<UserName> = mutableListOf(),
+) {
+    fun addName(name: UserName) {
+        names.add(name)
+        name.user = this
+    }
+}

@@ -3,10 +3,7 @@ package rs.skurikhin.demo.hibernate.service
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import rs.skurikhin.demo.hibernate.bean.ArticleEntity
-import rs.skurikhin.demo.hibernate.bean.ExternalLinkEntity
-import rs.skurikhin.demo.hibernate.bean.Gender
-import rs.skurikhin.demo.hibernate.bean.UserEntity
+import rs.skurikhin.demo.hibernate.bean.*
 import rs.skurikhin.demo.hibernate.repository.JpaCountryRepository
 import rs.skurikhin.demo.hibernate.repository.JpaUserRepository
 import rs.skurikhin.demo.hibernate.repository.UserRepository
@@ -41,6 +38,17 @@ class UserService(
 
         user.countryResidence = country
         log.info("Country residence changed for userId={}, country: {}", userId, country)
+        return user
+    }
+
+    @Transactional
+    fun addName(userId: Long, name: String): UserEntity {
+        val user = jpaUserRepository.findByUserId(userId) ?: throw userNotFoundException()
+
+//        user.names.add(UserName(firstName = name))
+        user.addName(UserName(firstName = name))
+
+        log.info("Changed name for userId={}, name: {}", userId, name)
         return user
     }
 
