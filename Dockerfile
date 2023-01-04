@@ -1,5 +1,11 @@
+FROM openjdk:21-ea-3-jdk
 
 ENV APP_HOME /u01/app
-RUN mkdir -p "$APP_HOME"
+WORKDIR $APP_HOME
 
-copy build/libs/*.jar .
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+
+ENTRYPOINT ["java","-jar","app.jar"]
+#ENTRYPOINT ["ls"]
+#ENTRYPOINT ["java","-version"]

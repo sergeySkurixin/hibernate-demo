@@ -1,14 +1,34 @@
 version: '3.8'
 services:
-    db:
-      image: postgres:14.1-alpine
-      environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-      ports:
-        - '5432:5432'
-      volumes: 
-        - db:/var/lib/postgresql/data
+  db:
+    image: postgres:14.1-alpine
+    container_name:
+      hibernate_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  app:
+    image: hibernate-demo-0.1
+    ports:
+      - '8080:8080'
+    environment:
+      db.hostname: hibernate_db
+    depends_on:
+      db:
+        condition: service_started
+#      links:
+#        - db
 volumes:
-    db:
-      driver: local
+  db:
+    driver: local
+
+
+#networks:
+#  default:
+#    external:
+#      name: hibernate-local
