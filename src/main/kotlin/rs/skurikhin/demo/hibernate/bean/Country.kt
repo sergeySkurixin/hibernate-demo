@@ -1,6 +1,7 @@
 package rs.skurikhin.demo.hibernate.bean
 
 import org.hibernate.envers.Audited
+import rs.skurikhin.demo.hibernate.bean.base.BaseEntity
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -14,4 +15,4 @@ data class Country(
     @GeneratedValue
     var cnrId: Int? = null,
     var countryName: String? = null,
-)
+) : BaseEntity()

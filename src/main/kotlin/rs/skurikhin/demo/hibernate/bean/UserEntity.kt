@@ -4,8 +4,7 @@ import org.hibernate.annotations.LazyCollection
 import org.hibernate.annotations.LazyCollectionOption
 import org.hibernate.envers.Audited
 import org.hibernate.envers.NotAudited
-import org.springframework.data.annotation.LastModifiedBy
-import org.springframework.data.annotation.LastModifiedDate
+import rs.skurikhin.demo.hibernate.bean.base.BaseEntity
 import javax.persistence.*
 
 @Entity
@@ -20,15 +19,9 @@ data class UserEntity(
 //    @Generated(GenerationTime.INSERT)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var userId: Long = 0,
-    @Version
-    var version: Int? = null,
     @Column(unique = true)
     var phone: Long = 0,
     var email: String? = null,
-    @LastModifiedDate
-    var modifiedDate: Long? = null,
-    @LastModifiedBy
-    var modifiedBy: String? = null,
 
     @Enumerated(value = EnumType.ORDINAL)
     var gender: Gender? = null,
@@ -53,7 +46,7 @@ data class UserEntity(
     )
     @LazyCollection(LazyCollectionOption.FALSE)
     var names: MutableList<UserName> = mutableListOf(),
-) {
+) : BaseEntity() {
     fun addName(name: UserName) {
         names.add(name)
         name.user = this

@@ -1,6 +1,7 @@
 package rs.skurikhin.demo.hibernate.bean
 
 import org.hibernate.envers.Audited
+import rs.skurikhin.demo.hibernate.bean.base.BaseEntity
 import javax.persistence.*
 
 @Entity
@@ -13,7 +14,7 @@ class UserName(
     var firstName: String? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     var user: UserEntity? = null,
-) {
+) : BaseEntity() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
