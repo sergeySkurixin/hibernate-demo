@@ -22,6 +22,7 @@ data class UserEntity(
     var userId: Long = 0,
     @Version
     var version: Int? = null,
+    @Column(unique = true)
     var phone: Long = 0,
     var email: String? = null,
     @LastModifiedDate

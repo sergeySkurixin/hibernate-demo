@@ -44,7 +44,7 @@ class UserController(
     fun findByPhone(@PathVariable phone: Long): ResponseEntity<*> {
         log.info("Get user with phone={}", phone)
 
-        val res = userService.findUserByUserId(phone)
+        val res = userService.findUserByPhone(phone)
         return ResponseEntity.ok(res)
     }
 
