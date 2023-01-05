@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rs.skurikhin.demo.hibernate.bean.*
 import rs.skurikhin.demo.hibernate.bean.request.ChangeUserRequest
-import rs.skurikhin.demo.hibernate.repository.JpaCountryRepository
 import rs.skurikhin.demo.hibernate.repository.JpaUserRepository
 import rs.skurikhin.demo.hibernate.repository.UserRepository
 import javax.transaction.Transactional
@@ -14,7 +13,7 @@ import javax.transaction.Transactional
 class UserService(
     @Autowired private var userRepository: UserRepository,
     @Autowired private var jpaUserRepository: JpaUserRepository,
-    @Autowired private var countryRepository: JpaCountryRepository,
+    @Autowired private var countryService: CountryService,
 ) {
     fun auth(phone: Long): UserEntity {
         val user = UserEntity().also {
@@ -34,7 +33,7 @@ class UserService(
 
     @Transactional
     fun changeCountryResidence(userId: Long, cnrId: Int?): UserEntity {
-        val country = countryRepository.findById(cnrId).orElseThrow { countryNotExists(cnrId) }
+        val country = countryService.findById(cnrId)
         val user = jpaUserRepository.findByUserId(userId) ?: throw userNotFoundException()
 
         user.countryResidence = country
@@ -96,7 +95,7 @@ class UserService(
         request.gender?.run { user.gender = this }
         request.email?.run { user.email = this }
         request.countryResidenceName?.run {
-            user.countryResidence = countryRepository.findByCountryName(this)
+            user.countryResidence = countryService.findCountry(this)
         }
 
         return user
@@ -104,7 +103,6 @@ class UserService(
 
     private fun userNotFoundException() = RuntimeException("User not found")
 
-    private fun countryNotExists(cnrId: Int?) = RuntimeException("Country not exists, cnrId=$cnrId")
 
     companion object {
         private val log = LoggerFactory.getLogger(UserService::class.java)
