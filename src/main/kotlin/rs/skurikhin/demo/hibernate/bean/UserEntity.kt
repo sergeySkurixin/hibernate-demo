@@ -2,10 +2,15 @@ package rs.skurikhin.demo.hibernate.bean
 
 import org.hibernate.annotations.LazyCollection
 import org.hibernate.annotations.LazyCollectionOption
+import org.hibernate.envers.Audited
+import org.hibernate.envers.NotAudited
+import org.springframework.data.annotation.LastModifiedBy
+import org.springframework.data.annotation.LastModifiedDate
 import javax.persistence.*
 
 @Entity
 @Table(name = "users")
+@Audited
 data class UserEntity(
 
     @Id
@@ -15,8 +20,14 @@ data class UserEntity(
 //    @Generated(GenerationTime.INSERT)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var userId: Long = 0,
+    @Version
+    var version: Int? = null,
     var phone: Long = 0,
     var email: String? = null,
+    @LastModifiedDate
+    var modifiedDate: Long? = null,
+    @LastModifiedBy
+    var modifiedBy: String? = null,
 
     @Enumerated(value = EnumType.ORDINAL)
     var gender: Gender? = null,
@@ -32,6 +43,7 @@ data class UserEntity(
     @OneToMany(cascade = [CascadeType.ALL])
     @LazyCollection(LazyCollectionOption.FALSE) // same as fetch = FetchType.EAGER, because hibernate not allow few collections with FetchType.EAGER
     @JoinColumn(name = "user_id")
+    @NotAudited
     var externalLinks: MutableList<ExternalLinkEntity> = mutableListOf(),
 
     @OneToMany(

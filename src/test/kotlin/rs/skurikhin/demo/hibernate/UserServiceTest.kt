@@ -53,6 +53,7 @@ class UserServiceTest {
         log.info("!!1 user: {}", user)
         assertNotNull(user)
         assertEquals(phone, user!!.phone)
+        assertEquals(0, user.version)
     }
 
     @Test
@@ -98,6 +99,7 @@ class UserServiceTest {
 
         val found = userService.findUserByUserId(user.userId)!!
         assertEquals(Gender.MALE, found.gender)
+//        assertEquals(1, user.version)
     }
 
     @Test

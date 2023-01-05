@@ -27,6 +27,10 @@ dependencies {
 
     // jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.hibernate:hibernate-envers")
+
+    // api
+    implementation("javax.validation:validation-api:1.1.0.Final")
 
     // testcontainers
     testImplementation("org.testcontainers:postgresql:1.17.3")

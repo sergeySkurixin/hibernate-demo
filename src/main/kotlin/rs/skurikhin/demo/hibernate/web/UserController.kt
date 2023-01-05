@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import rs.skurikhin.demo.hibernate.bean.UserEntity
+import rs.skurikhin.demo.hibernate.bean.request.ChangeUserRequest
 import rs.skurikhin.demo.hibernate.bean.request.CreateUserRequest
 import rs.skurikhin.demo.hibernate.service.UserService
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("users")
@@ -15,10 +17,10 @@ class UserController(
 ) {
 
     @PostMapping
-    fun insertUser(@RequestBody req: CreateUserRequest): ResponseEntity<*> {
+    fun insertUser(@Valid @RequestBody req: CreateUserRequest): ResponseEntity<*> {
         log.info("Insert user: {}", req)
 
-        val res = userService.auth(req.phone)
+        val res = userService.auth(req.phone!!)
         return ResponseEntity.ok(res)
     }
 
@@ -47,10 +49,19 @@ class UserController(
     }
 
     @PostMapping("/{userId}/add_article/{url}")
-    fun addPhone(@PathVariable userId: Long, @PathVariable url: String): ResponseEntity<UserEntity> {
+    fun changeGender(@PathVariable userId: Long, @PathVariable url: String): ResponseEntity<UserEntity> {
         log.info("Add article, userId={}, url='{}'", userId, url)
 
         val res = userService.addArticle(userId, url)
+        return ResponseEntity.ok(res)
+    }
+
+    @PatchMapping("/{userId}")
+    fun update(@PathVariable userId: Long, @RequestBody request: ChangeUserRequest): ResponseEntity<UserEntity> {
+        log.info("Update user, userId={}, request='{}'", userId, request)
+
+        val res = userService.update(userId, request)
+
         return ResponseEntity.ok(res)
     }
 

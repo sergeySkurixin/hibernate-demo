@@ -1,9 +1,11 @@
 package rs.skurikhin.demo.hibernate.bean
 
+import org.hibernate.envers.Audited
 import javax.persistence.*
 
 @Entity
 @Table(name = "user_name")
+@Audited
 class UserName(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

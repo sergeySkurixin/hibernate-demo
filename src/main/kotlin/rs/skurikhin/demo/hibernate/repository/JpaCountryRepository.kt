@@ -5,4 +5,7 @@ import org.springframework.stereotype.Repository
 import rs.skurikhin.demo.hibernate.bean.Country
 
 @Repository
-interface JpaCountryRepository : JpaRepository<Country?, Int?>
+interface JpaCountryRepository : JpaRepository<Country?, Int?> {
+    fun findByCountryName(countryName: String): Country?
+}
+

@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import rs.skurikhin.demo.hibernate.bean.*
+import rs.skurikhin.demo.hibernate.bean.request.ChangeUserRequest
 import rs.skurikhin.demo.hibernate.repository.JpaCountryRepository
 import rs.skurikhin.demo.hibernate.repository.JpaUserRepository
 import rs.skurikhin.demo.hibernate.repository.UserRepository
@@ -86,6 +87,18 @@ class UserService(
         user.externalLinks.add(ExternalLinkEntity(resourceName = resourceName))
 
 //        return jpaUserRepository.save(user)
+        return user
+    }
+
+    @Transactional
+    fun update(userId: Long, request: ChangeUserRequest): UserEntity {
+        val user: UserEntity = findUserByUserId(userId) ?: throw userNotFoundException()
+        request.gender?.run { user.gender = this }
+        request.email?.run { user.email = this }
+        request.countryResidenceName?.run {
+            user.countryResidence = countryRepository.findByCountryName(this)
+        }
+
         return user
     }
 
